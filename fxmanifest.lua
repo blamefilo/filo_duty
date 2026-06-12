@@ -2,6 +2,7 @@ fx_version "cerulean"
 game "gta5"
 lua54 "yes"
 
+name "filo_duty"
 author "filo studios."
 discord "https://discord.gg/bErPEKvRXg"
 description "Duty interaction points creator script by filo studios."
