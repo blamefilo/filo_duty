@@ -27,7 +27,6 @@ escrow_ignore {
 }
 
 files {
-    "client/zone.lua",
     "data/*",
 }
 
