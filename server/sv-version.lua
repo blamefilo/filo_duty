@@ -14,7 +14,7 @@ CreateThread(function()
     PerformHttpRequest(apiUrl, function(errorCode, resultData, headers)
         if errorCode == 200 then
             local data = json.decode(resultData)
-            if data and data.updateAvailable then
+            if data then
                 print(data.text)
             end
         end
