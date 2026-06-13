@@ -44,7 +44,7 @@ function zone:create(data)
                             textLabel = "Go On Duty (" .. (self.jobLabel or self.job) .. ")"
                         end
 
-                        exports.plrs_textui:DrawText({
+                        exports.filo_textui:DrawText({
                             { key = "E", label = textLabel }
                         })
                     end
@@ -58,7 +58,7 @@ function zone:create(data)
                     end
                 else
                     if drawingText then
-                        exports.plrs_textui:HideText()
+                        exports.filo_textui:HideText()
                         drawingText = false
                     end
                 end
