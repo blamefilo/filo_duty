@@ -15,13 +15,13 @@ function zone:create(data)
         DebugPrint('Zone already exists:', data.uuid)
         return
     end
-    local self = setmetatable({}, zone)
-    local interactionType = data.interactionType or 'marker'
 
+    local self = setmetatable({}, zone)
     self.job = data.job
     self.jobLabel = data.jobLabel
     self.uuid = data.uuid
 
+    local interactionType = data.interactionType or 'marker'
     if interactionType == 'marker' then
         local markerData = Config.Marker
         local drawingText = false
@@ -34,13 +34,13 @@ function zone:create(data)
                 self.marker:draw()
                 if point.currentDistance < 1.0 then
                     local jobData = Framework.GetPlayerJobData()
-                    local jobName = PlayerHasJob(self.job)
+                    local hasJob = PlayerHasJob(self.job)
 
                     if not drawingText then
                         drawingText = true
                         local textLabel = jobData.onDuty and "Go Off Duty (" .. (self.jobLabel or self.job) .. ")" or "Go On Duty (" .. (self.jobLabel or self.job) .. ")"
 
-                        if jobData.jobName ~= self.job and jobName then
+                        if jobData.jobName ~= self.job and hasJob then
                             textLabel = "Go On Duty (" .. (self.jobLabel or self.job) .. ")"
                         end
 
@@ -50,9 +50,9 @@ function zone:create(data)
                     end
 
                     if IsControlJustPressed(0, 38) then
-                        if not jobName then
+                        if self.job == jobData.jobName then
                             ToggleDuty(self.job, not jobData.onDuty)
-                        else
+                        elseif self.job ~= jobData.jobName and hasJob then
                             ToggleDuty(self.job, true)
                         end
                     end
@@ -101,19 +101,26 @@ function zone:create(data)
         })
     end
 
-    self.cleanup = function()
+    function self:cleanup()
+        if self.marker then
+            self.marker:destroy()
+            self.marker = nil
+        end
+
         if self.point then
-            self.point:remove()
+            self.point:destroy()
+            self.point = nil
         end
 
         if self.target then
             exports.ox_target:removeZone('filo_duty_' .. self.uuid)
+            self.target = nil
         end
 
-        zones[self.uuid] = nil
+        zones[data.uuid] = nil
     end
 
-    return self
+    zones[data.uuid] = self
 end
 
 local function onPlayerLoaded()
@@ -126,9 +133,11 @@ local function onPlayerLoaded()
             goto continue
         end
 
-        if not zones[uuid] then
-            zones[uuid] = zone:create(zoneData)
+        if zones[uuid] then
+            zones[uuid]:cleanup()
         end
+
+        zone:create(zoneData)
         ::continue::
     end
 end
@@ -141,6 +150,7 @@ end
 
 RegisterNetEvent('filo_duty:client:refreshDutyZones', function()
     cleanupAllZones()
+    Wait(100)
     onPlayerLoaded()
 end)
 
@@ -163,7 +173,7 @@ RegisterNetEvent('community_bridge:Client:OnPlayerJobUpdate', function(jobData)
         end
 
         if not zones[uuid] then
-            zones[uuid] = zone:create(zoneData)
+            zone:create(zoneData)
         end
         ::continue::
     end
@@ -175,3 +185,6 @@ AddEventHandler("onResourceStart", function(resourceName)
 
     onPlayerLoaded()
 end)
+
+
+
