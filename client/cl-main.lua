@@ -185,6 +185,3 @@ AddEventHandler("onResourceStart", function(resourceName)
 
     onPlayerLoaded()
 end)
-
-
-

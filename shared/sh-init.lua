@@ -5,3 +5,9 @@ for key, value in pairs(Bridge) do
         load(key .. " = ...") (value)
     end
 end
+
+function DebugPrint(...)
+    if Config.Debug then
+        print(...)
+    end
+end
