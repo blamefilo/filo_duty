@@ -4,7 +4,7 @@ lua54 'yes'
 
 name 'filo_duty'
 author 'filo studios.'
-discord 'https://discord.gg/bErPEKvRXg'
+discord 'https://discord.gg/ReEE9HgA4c'
 description 'Duty interaction points creator script by filo studios.'
 version '1.0.0'
 
@@ -14,6 +14,7 @@ shared_scripts {
 }
 
 server_scripts {
+    '@oxmysql/lib/MySQL.lua',
     'server/sv-*.lua'
 }
 

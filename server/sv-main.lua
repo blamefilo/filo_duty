@@ -1,5 +1,3 @@
-storage = require('server.storage')
-
 lib.addCommand(Config.Command, {
     help = 'Open duty creator menu',
     restricted = Config.CommandPermissions
@@ -10,20 +8,20 @@ end)
 lib.callback.register("filo_duty:server:createDuty", function(source, data)
     local uuid = lib.string.random('aaa111AAA111')
     data.uuid = uuid
-    storage:add(data)
+    Storage:add(data)
 
     TriggerClientEvent("filo_duty:client:refreshDutyZones", -1)
     return true
 end)
 
 lib.callback.register("filo_duty:server:deleteDuty", function(source, uuid)
-    storage:remove(uuid)
+    Storage:remove(uuid)
     TriggerClientEvent("filo_duty:client:refreshDutyZones", -1)
     return true
 end)
 
 lib.callback.register("filo_duty:server:getDutyZones", function(source, jobName)
-    return storage:get()
+    return Storage:get()
 end)
 
 RegisterNetEvent("filo_duty:server:toggleDuty", function(jobName, bool)
@@ -38,7 +36,13 @@ RegisterNetEvent("filo_duty:server:toggleDuty", function(jobName, bool)
         if jobName then
             Framework.SetPlayerJob(src, jobName, jobGrade)
             Framework.SetPlayerDuty(src, bool)
-            Notify.SendNotification(src, "Duty", bool and "You are now on duty with " .. jobName .. "." or "You are now off duty.", "success")
+            Notify.SendNotification(src, "Duty",
+                bool and "You are now on duty with " .. jobName .. "." or "You are now off duty.", "success")
         end
     end
+end)
+
+CreateThread(function()
+    while not Storage do Wait(100) end
+    Storage:initialize()
 end)

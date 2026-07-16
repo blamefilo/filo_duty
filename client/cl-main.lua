@@ -38,7 +38,8 @@ function zone:create(data)
 
                     if not drawingText then
                         drawingText = true
-                        local textLabel = jobData.onDuty and "Go Off Duty (" .. (self.jobLabel or self.job) .. ")" or "Go On Duty (" .. (self.jobLabel or self.job) .. ")"
+                        local textLabel = jobData.onDuty and "Go Off Duty (" .. (self.jobLabel or self.job) .. ")" or
+                        "Go On Duty (" .. (self.jobLabel or self.job) .. ")"
 
                         if jobData.jobName ~= self.job and hasJob then
                             textLabel = "Go On Duty (" .. (self.jobLabel or self.job) .. ")"
@@ -50,6 +51,7 @@ function zone:create(data)
                     end
 
                     if IsControlJustPressed(0, 38) then
+                        drawingText = false
                         if self.job == jobData.jobName then
                             ToggleDuty(self.job, not jobData.onDuty)
                         elseif self.job ~= jobData.jobName and hasJob then
@@ -79,7 +81,8 @@ function zone:create(data)
                     label = 'Go On Duty (' .. (self.jobLabel or self.job) .. ')',
                     canInteract = function()
                         local jobData = Framework.GetPlayerJobData()
-                        return (jobData.jobName == self.job and not jobData.onDuty) or (jobData.jobName ~= self.job and PlayerHasJob(self.job))
+                        return (jobData.jobName == self.job and not jobData.onDuty) or
+                        (jobData.jobName ~= self.job and PlayerHasJob(self.job))
                     end,
                     onSelect = function()
                         ToggleDuty(self.job, true)
